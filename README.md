@@ -1,3 +1,6 @@
+# Peggie🦜
+Made by NewLayer Ventures with 🦜
+
 This project was bootstrapped with [Create Eth App](https://github.com/paulrberg/create-eth-app).
 
 ## Project Structure
@@ -8,7 +11,7 @@ Workspaces makes it possible to setup multiple packages in such a way that we on
 a single pass. Dependencies are hoisted at the root.
 
 ```
-my-eth-app
+peggie-web
 ├── README.md
 ├── node_modules
 ├── package.json
