@@ -6,8 +6,8 @@ const addresses = {
   CryptoKitties: "0x06012c8cf97bead5deae237070f9587f8e7a266d",
   POAP: "0x22c1f6050e56d2876009903609a2cc3fef83b415",
   POAPProxy: "0x96d0eC5Abb022ebF3a269344b2593eD909A77948",
-  fakeDai: 0x198dc91934928ed7d6a95f1c1a07c583891149af,
-  Rainforest: 0x8b15C9b0bA4658124dE22f0ea2239D003756245e,
+  fakeDai: "0x198dc91934928ed7d6a95f1c1a07c583891149af",
+  Rainforest: "0x8b15C9b0bA4658124dE22f0ea2239D003756245e",
 };
 
 export default addresses;
