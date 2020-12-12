@@ -65,6 +65,7 @@ const NftName = styled.p`
   display: flex;
   flex-direction: column;
   font-size: calc(10px + 2vmin);
+  color: #333333;
   justify-content: center;
   align-self: center;
   max-width: 200px;

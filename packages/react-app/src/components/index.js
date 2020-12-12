@@ -145,3 +145,43 @@ export const ModalTitle = styled.div`
   color: white;
   text-align: center;
 `
+
+export const CageContainer = styled.div`
+  background-color: #FED53A;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  // align-items: 
+  align-content: center;
+`
+
+export const CageImage = styled.img`
+  cursor: pointer;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px;
+  border: 5px solid;
+  border-radius: 10px;
+  border-color: white;
+`;
+
+export const CageRightSideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // align-items: 
+  align-content: center;
+`
+
+export const CageData= styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // align-items: 
+  align-content: center;
+`
+
+export const CageBid = styled.div`
+
+`
+

@@ -4,6 +4,7 @@ import { getDefaultProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 
 import { Body, Button, Header, Footer, Image, Link, NftList, ModalText, ModalTitle } from "./components";
+import { CageContainer, CageImage, CageRightSideContainer, CageData, CageBid } from "./components";
 import Modal from "./components/modal";
 import Nft from "./components/nft"
 
@@ -102,7 +103,7 @@ function RegisterNftButton(props) {
   }
 
   const myNftClickHandler = (index) => {
-    console.log({index}, "clicked!!!");
+    console.log("Let's create a cage for ",  {index});
     //TODO: call startAuction() on Cage contract
   }
   
@@ -137,6 +138,7 @@ function RegisterNftButton(props) {
 
 function NftListPage(props) {
   const Nfts = props.nftArray;
+  // console.log('Nfts ', {Nfts});
   return (
       <NftList className="list_nftview">
         {Nfts &&
@@ -157,21 +159,114 @@ function NftListPage(props) {
   )
 }
 
-async function retrieveCages(provider) {
-  // TODO: 
-  // 1) retrieve cage list from the main contract
-  // 2) retrieve cage status from each cage contract
-  // 3) show the cage status on UI
+
+function CageContainerPage(props) {
+  const Nfts = props.nftArray;
+  return (
+    <CageContainer>
+      <CageImage src={props.status.image}></CageImage>
+      <CageRightSideContainer>
+        <CageData>
+          <p>Contract: {props.status.contract}</p>
+          <p>Name: {props.status.name}</p>
+          <p>Auction Ends: {props.status.auctionEnds}</p>
+          <p>Total Committed: {props.status.totalCommited}</p>
+          <p>Cover Price: {props.status.coverPrice}</p>
+        </CageData>
+        <CageBid>
+          <input></input>
+          <button>Bid</button>
+        </CageBid>
+      </CageRightSideContainer>
+    </CageContainer>
+  )
+}
+
+async function retrieveAllCages(provider, setAllCages) {
+  // TODO: retrieve cage list from the main contract
+  const signer = provider.getSigner();
+  
+  // use dummy for now
+  const retrievedCages =     
+  [{
+    index: 0,
+    name: 'dummy 0',
+    image_url : 'https://storage.googleapis.com/poapmedia/yam-heros-2020-logo-1597862089982.png'
+  }, {
+    index: 1,
+    name: 'dummy 1',
+    image_url : 'https://storage.googleapis.com/poapmedia/yam-heros-2020-logo-1597862089982.png'
+  }]
+
+  setAllCages(retrievedCages);
+
+  return;
+}
+
+async function retrieveShownCage(provider, index, setShownCageStatus) {
+  // const signer = provider.getSigner();
+  // const addr = await signer.getAddress();
+
+  const poapContract = new Contract(addresses.POAP, abis.erc721, provider);
+
+  const tokenBigNum = await poapContract.tokenByIndex(2173);
+  const tokenId = tokenBigNum.toNumber();
+  const tokenUri = await poapContract.tokenURI(tokenId);
+  const tokenMeta = await fetch(tokenUri).then(response => response.json());
+
+  const dummyCage = {
+    image: tokenMeta.image_url,
+    contract: 'some contract',
+    name: tokenMeta.name,
+    auctionEnds: 'someday',
+    totalCommited: 'some amount',
+    coverPrice: 'the price'
+  }
+
+  setShownCageStatus(dummyCage);
+
+  return;
 }
 
 function App() {
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const [modalMyNftsVisible, setModalMyNftsVisible] = useState(false);
   const [modalCageStatusVisible, setModalCageStatusVisible] = useState(false);
+  const [allCages, setAllCages] = useState([]);
+  const [shownCageStatus, setShownCageStatus] = useState([]);
 
-  const [registeredNfts, setRegisteredNfts] = useState([]);
+  useEffect(() => {
+    if (provider) {
+      retrieveAllCages(provider, setAllCages);
+    }
+  }, [provider])
 
-  // setRegisteredNfts(retrieveCages(provider));
+  // Cage status list
+  // auction 종료 시점
+  // 커밋된 토큰 수량 (totalCommited)
+  // coverPrice()
+
+  const cageClickHandler = (index) => {
+    if (!provider) {
+      alert("Connect a wallet first!")
+    } else {
+      console.log("Retrieve & show the status of ", {index});
+      checkAndOpenModal();
+      retrieveShownCage(provider, index, setShownCageStatus);
+    }
+  }
+
+  const checkAndOpenModal = () => {
+    if (!provider) {
+      alert("Connect a wallet first!")
+    } else {
+      setModalCageStatusVisible(true)
+    }
+  }
+  const closeModal = () => {
+    setModalCageStatusVisible(false)
+  }
+
 
 
   return (
@@ -191,15 +286,17 @@ function App() {
           1) Show cages
           2) Show details with modal when clicked */}
 
-        <NftListPage nftArray={registeredNfts} /> 
+        <NftListPage nftArray={allCages} clickHandler={cageClickHandler}/> 
         {
           <Modal
             // whichCage={}
             visible={modalCageStatusVisible}
             closable={false}
             maskClosable={true}
-            // onClose={closeModal}
+            onClose={closeModal}
             >
+              <ModalTitle>Cage Status</ModalTitle>
+              <CageContainerPage status={shownCageStatus}/>
           </Modal>
         }
 
