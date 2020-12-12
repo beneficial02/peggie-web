@@ -73,15 +73,21 @@ const ModalInner = styled.div`
   box-sizing: border-box;
   position: relative;
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
-  background-color: #fff;
+  background-color: #03658C;
   border-radius: 10px;
-  width: 360px;
-  max-width: 480px;
+  width: 80%;
+  max-width: 1600px;
+  height: 80%;
+  max-height: 1000px;
   top: 50%;
   transform: translateY(-50%);
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 12px 24px;
   color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
 `
 
 

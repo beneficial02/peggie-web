@@ -2,16 +2,21 @@ import React, { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
 import { getDefaultProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
-import { useQuery } from "@apollo/react-hooks";
 
-import { Body, Button, Header, Footer, Image, Link, NftList } from "./components";
+import { Body, Button, Header, Footer, Image, Link, NftList, ModalText, ModalTitle } from "./components";
 import Modal from "./components/modal";
 import Nft from "./components/nft"
 
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
 import { addresses, abis } from "@project/contracts";
-import GET_TRANSFERS from "./graphql/subgraph";
+
+const yBtnBackgroundColor = '#FED53A'
+const yBtnTextColor = '#282c34'
+const rBtnBackgroundColor = '#EB3F33'
+const rBtnTextColor = 'white'
+const bBtnBackgroundColor = '#0360DC'
+const bBtnTextColor = 'white'
 
 async function readOnChainData() {
   // TODO: support WalletConnect, etc.
@@ -30,6 +35,8 @@ async function readOnChainData() {
 function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
   return (
     <Button
+      backGroundColor={bBtnBackgroundColor}
+      textColor={bBtnTextColor}
       onClick={() => {
         if (!provider) {
           loadWeb3Modal();
@@ -43,31 +50,29 @@ function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
   );
 }
 
-// 0. Show modal
-// 1. Select NFT contract
-// 2. Show NFT list in the contract owned by the signer
+// 0. [DONE] Show modal
+// 1. [partially DONE] Select NFT contract
+// 2. [DONE] Show NFT list in the contract owned by the signer
 // 3. register when a NFT is clicked
 
 function RegisterNftButton(props) {
   const [myNfts, setMyNfts] = useState([]);
-
+  const provider = props.provider;
   let tempNfts = [];
 
   const checkAndOpenModal = () => {
-    if (!props.provider) {
+    if (!provider) {
       alert("Connect a wallet first!")
     } else {
-      props.setModalVisible(true)
+      props.setModalMyNftsVisible(true)
     }
   }
   const closeModal = () => {
-    props.setModalVisible(false)
+    props.setModalMyNftsVisible(false)
   }
 
 
-  const getTokens = async () => {
-    console.log("load token clicked!!")
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+  const retrieveMyNfts = async () => {
     const signer = provider.getSigner();
     const addr = await signer.getAddress();
   
@@ -95,18 +100,35 @@ function RegisterNftButton(props) {
       console.log(myNfts)
     );
   }
+
+  const myNftClickHandler = (index) => {
+    console.log({index}, "clicked!!!");
+    //TODO: call startAuction() on Cage contract
+  }
   
   return(
     <>
-      <Button onClick={checkAndOpenModal}> Register My NFT </Button>
+      <Button
+        backGroundColor={yBtnBackgroundColor}
+        textColor={yBtnTextColor}
+        onClick={() => checkAndOpenModal()}>
+          Register My NFT
+      </Button>
       {
         <Modal
-          visible={props.modalVisible}
+          visible={props.modalMyNftsVisible}
           closable={false}
           maskClosable={true}
           onClose={closeModal}>
-            <Button onClick={getTokens}>Load tokens</Button>
-            <NftListPage nftArray={myNfts} />
+            <ModalTitle>Register NFT</ModalTitle>
+            {/* <ModalText>1. Click Load tokens button <br/> 2. Click a NFT to register</ModalText> */}
+            <Button 
+              backGroundColor={rBtnBackgroundColor}
+              textColor={rBtnTextColor}
+              onClick={retrieveMyNfts}>
+                Load tokens
+            </Button>
+            <NftListPage nftArray={myNfts} clickHandler={myNftClickHandler} />
         </Modal>
       }
     </>
@@ -120,11 +142,14 @@ function NftListPage(props) {
         {Nfts &&
           Nfts.map(nft => {
             return (
-              <Nft
+              <div 
                 key={nft.index}
-                name={nft.name}
-                image={nft.image_url}
-              />
+                onClick={() => props.clickHandler(nft.index)}>
+                <Nft
+                  name={nft.name}
+                  image={nft.image_url}
+                />
+              </div>
             );
           })
         }
@@ -132,11 +157,22 @@ function NftListPage(props) {
   )
 }
 
+async function retrieveCages(provider) {
+  // TODO: 
+  // 1) retrieve cage list from the main contract
+  // 2) retrieve cage status from each cage contract
+  // 3) show the cage status on UI
+}
+
 function App() {
-  // const { loading, error, data } = useQuery(GET_TRANSFERS);
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
-  const [modal1Visible, setModal1Visible] = useState(false);
-  const [modal2Visible, setModal2Visible] = useState(false);
+  const [modalMyNftsVisible, setModalMyNftsVisible] = useState(false);
+  const [modalCageStatusVisible, setModalCageStatusVisible] = useState(false);
+
+  const [registeredNfts, setRegisteredNfts] = useState([]);
+
+  // setRegisteredNfts(retrieveCages(provider));
+
 
   return (
     <div>
@@ -146,18 +182,27 @@ function App() {
       <Body>
         <h1>Peggie🦜</h1>
 
-        <RegisterNftButton provider={provider} modalVisible={modal1Visible} setModalVisible={setModal1Visible}/>
+        <RegisterNftButton
+          provider={provider}
+          modalMyNftsVisible={modalMyNftsVisible} setModalMyNftsVisible={setModalMyNftsVisible}
+        />
         
-        
-        <Button onClick={() => readOnChainData()}>
-          Read On-Chain Balance
-        </Button>
+        {/*TODO: 
+          1) Show cages
+          2) Show details with modal when clicked */}
 
-        <Link href="https://ethereum.org/developers/#getting-started" style={{ marginTop: "8px" }}>
-          Learn Ethereum
-        </Link>
-        <Link href="https://reactjs.org">Learn React</Link>
-        <Link href="https://thegraph.com/docs/quick-start">Learn The Graph</Link>
+        <NftListPage nftArray={registeredNfts} /> 
+        {
+          <Modal
+            // whichCage={}
+            visible={modalCageStatusVisible}
+            closable={false}
+            maskClosable={true}
+            // onClose={closeModal}
+            >
+          </Modal>
+        }
+
       </Body>
       <Footer>
         Made by NewLayer Ventures with 🦜

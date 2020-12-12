@@ -2,12 +2,24 @@ import React from 'react'
 import styled from 'styled-components'
 
 const NftContainer = styled.div`
+  height: 330px;
+  width: 250px;
+  margin: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
-  flex-basis: 100%;
-  flex-basis: calc(33.333% - 20px);
-  margin: 10px;
+  border: 10px solid;
+  border-radius: 5px;
+  border-color: #FED53A;
+  background-color: #FED53A;
+  // flex-basis: 100%;
+  // flex-basis: calc(33.333% - 20px);
+
   cursor: pointer;
   transition: 0.5s all ease-in;
+  // justify-content: center;
 `;
  
 const NftIcons = styled.div`
@@ -41,13 +53,28 @@ const NftMeta = styled.div`
 const NftImage = styled.img`
   cursor: pointer;
   width: 100%;
+  max-width: 200px;
+  margin: 10px;
+  border: 5px solid;
+  border-radius: 10px;
+  border-color: white;
 `;
 
 const NftName = styled.p`
+  margin: 10px;  
   display: flex;
+  flex-direction: column;
   font-size: calc(10px + 2vmin);
   justify-content: center;
+  align-self: center;
+  max-width: 200px;
+  height: 100px;
+  text-align: center;
 `;
+
+// const NftElement = styled.li`
+//   display:inline-block;
+// `;
  
 function Nft({ name, image }) {
   return (
