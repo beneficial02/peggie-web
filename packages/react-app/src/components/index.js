@@ -45,6 +45,14 @@ export const Link = styled.a.attrs({
   margin-top: 10px;
 `;
 
+export const BodyButtonsContainer = styled.div`
+  display: row;
+  flex-direction: column;
+  justify-content: center;
+  // align-items: 
+  align-content: center;
+`
+
 // export const BlueButton = styled.button`
 //   background-color: #0360DC;
 //   border: none;
@@ -151,21 +159,22 @@ export const CageContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  // align-items: 
+  align-items: center;
   align-content: center;
 `
 
 export const CageImage = styled.img`
   cursor: pointer;
-  width: 100%;
-  max-width: 500px;
-  margin: 10px;
+  width: 500px;
+  height: 500px;
+  margin: 30px;
   border: 5px solid;
   border-radius: 10px;
   border-color: white;
 `;
 
 export const CageRightSideContainer = styled.div`
+  margin: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -179,9 +188,25 @@ export const CageData= styled.div`
   justify-content: center;
   // align-items: 
   align-content: center;
+  max-width: 400px;
+  font-size: 24px;
+  word-break: break-all;
 `
 
 export const CageBid = styled.div`
 
 `
 
+export const CageUpperButtonsContainer = styled.div`
+  display: row;
+  flex-direction: column;
+  justify-content: center;
+  // align-items: 
+  align-content: center;
+  margin: 0 0 30px 0;
+`
+
+export const Input = styled.input`
+  height: 40px;
+  font-size: 18px;
+`

@@ -2,13 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 
 const NftContainer = styled.div`
-  height: 330px;
-  width: 250px;
+  height: 400px;
+  width: 300px;
   margin: 20px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   position: relative;
   border: 10px solid;
   border-radius: 5px;
@@ -52,8 +53,10 @@ const NftMeta = styled.div`
  
 const NftImage = styled.img`
   cursor: pointer;
-  width: 100%;
-  max-width: 200px;
+  // width: 100%;
+  max-width: 350px;
+  // height: 100%;
+  max-width: 350px;
   margin: 10px;
   border: 5px solid;
   border-radius: 10px;
