@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
-import { getDefaultProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 
-import { Body, Button, Header, Footer, Image, Link, BodyButtonsContainer, NftList, ModalText, ModalTitle } from "./components";
+import { Body, Button, Header, Footer, BodyButtonsContainer, NftList, ModalText, ModalTitle } from "./components";
 import { CageContainer, CageImage, CageRightSideContainer, CageData, CageBid, CageUpperButtonsContainer, Input } from "./components";
 import Modal from "./components/modal";
 import Nft from "./components/nft"
@@ -12,10 +11,10 @@ import useWeb3Modal from "./hooks/useWeb3Modal";
 
 import { addresses, abis } from "@project/contracts";
 
-const testEnsTokenId = '57570374215734827128048584667055063727521204161116363362611063707783812091732'
+const testEnsTokenId = '62132141599671301147468400389549904084762456259711708693615247978504391462265'
 
-// let cageAddress
-let cageAddress = '0x86d9df4531a0BF816Bcd1382B5fFb789FD4bD19c'
+let cageAddress
+// let cageAddress = '0x86d9df4531a0BF816Bcd1382B5fFb789FD4bD19c'
 
 const yBtnBackgroundColor = '#FED53A'
 const yBtnTextColor = '#282c34'
@@ -23,20 +22,6 @@ const rBtnBackgroundColor = '#EB3F33'
 const rBtnTextColor = 'white'
 const bBtnBackgroundColor = '#0360DC'
 const bBtnTextColor = 'white'
-
-async function readOnChainData() {
-  // TODO: support WalletConnect, etc.
-  const provider = new ethers.providers.Web3Provider(window.ethereum)
-  const signer = provider.getSigner();
-
-  // Create an instance of an ethers.js Contract
-  // Read more about ethers.js on https://docs.ethers.io/v5/api/contract/contract/
-  const poapContract = new Contract(addresses.POAP, abis.erc721, provider);
-
-  const tokenBalance = await poapContract.balanceOf(signer.getAddress());
-  console.log({addr: await signer.getAddress()});
-  console.log({ tokenBalance: tokenBalance.toString() });
-}
 
 function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
   return (
@@ -94,8 +79,6 @@ function RegisterNftButton(props) {
       name: 'peggie.eth',
       image_url: 'https://dashboard.snapcraft.io/site_media/appmedia/2018/03/terminal-parrot_icon.png'
     }]
-  
-
 
     /// Doesn't use below codes for demo
     
@@ -125,12 +108,11 @@ function RegisterNftButton(props) {
 
   const myNftClickHandler = async (index) => {
     
-    if (index != 2) {
+    if (index !== 2) {
       alert("click peggie.eth for demo :)");
     } else {
       console.log("Let's create a cage for ",  {index});
       const signer = provider.getSigner();
-      const addr = await signer.getAddress();
 
       const rainforestCont = new Contract(addresses.Rainforest, abis.rainforest, signer);
 
@@ -144,7 +126,6 @@ function RegisterNftButton(props) {
 
         console.log("Cage Deployed tx hash: ", createCageResult.hash);
     }
-    //TODO: call startAuction() on Cage contract
   }
   
   return(
@@ -162,7 +143,6 @@ function RegisterNftButton(props) {
           maskClosable={true}
           onClose={closeModal}>
             <ModalTitle>Register NFT</ModalTitle>
-            {/* <ModalText>1. Click Load tokens button <br/> 2. Click a NFT to register</ModalText> */}
             <Button 
               backGroundColor={rBtnBackgroundColor}
               textColor={rBtnTextColor}
@@ -283,7 +263,7 @@ async function approveNft(provider) {
     }
   )
 
-  console.log("NFT approval result: ", approvalResult);
+  console.log("NFT approval tx: ", approvalResult);
 }
 
 async function stakeNft(provider) {
@@ -292,15 +272,14 @@ async function stakeNft(provider) {
   const cageCont = new Contract(cageAddress, abis.cage, signer);
 
   const stakeResult = await cageCont.stake(
-    "20", // 10 blocks = 2.5 minutes
-    // "40320", //commit duration: 7 days (for dev & testing until demo)
+    "20", // 20 blocks = 5 minutes
     { // overrides
       gasLimit: 1000000,
       gasPrice: ethers.utils.parseUnits('7.0', 'gwei')
     }
   )
 
-  console.log("NFT stake result: ", stakeResult);
+  console.log("NFT stake tx: ", stakeResult);
 }
 
 async function retrieveShownCage(provider, index, setShownCageStatus) {
@@ -364,7 +343,7 @@ async function approveFakeDai(provider) {
     }
   )
 
-  console.log("DAI approval result: ", approvalResult);
+  console.log("DAI approval tx: ", approvalResult);
 }
 
 
@@ -387,7 +366,7 @@ async function commitHandler (provider, commitPrice) {
     }
   )
 
-  console.log("commit result: ", commitResult);
+  console.log("commit tx: ", commitResult);
 }
 
 async function finishCommitPeriod(provider) {
@@ -402,7 +381,7 @@ async function finishCommitPeriod(provider) {
     }
   )
 
-  console.log("finishCommitPeriod result: ", finishResult);
+  console.log("finishCommitPeriod tx: ", finishResult);
 }
 
 async function depositCoverFee(provider) {
@@ -411,14 +390,14 @@ async function depositCoverFee(provider) {
   const cageCont = new Contract(cageAddress, abis.cage, signer);
 
   const depositResult = await cageCont.depositCover(
-    "10", // 10 blocks = 2.5 minutes
+    "20", // 20 blocks = 5 minutes
     { // overrides
       gasLimit: 1000000,
       gasPrice: ethers.utils.parseUnits('7.0', 'gwei')
     }
   )
 
-  console.log("depositCoverFee result: ", depositResult);
+  console.log("depositCoverFee tx: ", depositResult);
 }
 
 
@@ -432,26 +411,11 @@ function App() {
   const [commitPrice, setCommitPrice] = useState('');
 
 
-  // retrieveAllCages(provider, setAllCages);
-
-  // useEffect(() => {
-  //   if (provider) {
-  //     retrieveAllCages(provider, setAllCages);
-  //   }
-  // }, [provider])
-
-  // Cage status list
-  // auction 종료 시점
-  // 커밋된 토큰 수량 (totalCommited)
-  // coverPrice()
-
   const cageClickHandler = (index) => {
     if (!provider) {
       alert("Connect a wallet first!")
     } else {
-      if (index != 0) {
-        console.log('123')
-        console.log()
+      if (index !== 0) {
         alert("Click peggie.eth for demo :)")
         return;
       }
@@ -471,11 +435,6 @@ function App() {
   const closeModal = () => {
     setModalCageStatusVisible(false)
   }
-
-  // const commitPriceChangeHandler = (price) => {
-  //   setCommitPrice(price)
-  // }
-
 
 
   return (
@@ -497,10 +456,6 @@ function App() {
               Load Cages
           </Button>
         </BodyButtonsContainer>
-        
-        {/*TODO: 
-          1) Show cages
-          2) Show details with modal when clicked */}
 
         <NftListPage nftArray={allCages} clickHandler={cageClickHandler}/> 
         {

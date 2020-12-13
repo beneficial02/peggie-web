@@ -8,7 +8,7 @@ const addresses = {
 
   // Goerli addresses for Peggie
   fakeDai: "0x198dc91934928ed7d6a95f1c1a07c583891149af",
-  Rainforest: "0x592Dd542C4D9bC3974A6e735ce12e224Cc0A0bdc",
+  Rainforest: "0xF847e3c06938B21051Bf73faD144978a68D5A14a",
   ENSGoerli: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"
 };
 
