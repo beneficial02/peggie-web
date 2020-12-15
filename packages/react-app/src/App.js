@@ -11,7 +11,8 @@ import useWeb3Modal from "./hooks/useWeb3Modal";
 
 import { addresses, abis } from "@project/contracts";
 
-const testEnsTokenId = '62132141599671301147468400389549904084762456259711708693615247978504391462265'
+// UPDATE THIS ID FOR DEMO
+const testEnsTokenId = '105257655820778448609140579597948018071519181885792033363672081782919444410835'
 
 let cageAddress
 // let cageAddress = '0x86d9df4531a0BF816Bcd1382B5fFb789FD4bD19c'
@@ -61,7 +62,6 @@ function RegisterNftButton(props) {
   const closeModal = () => {
     props.setModalMyNftsVisible(false)
   }
-
 
   const retrieveMyNfts = async () => {
 
@@ -320,7 +320,6 @@ async function retrieveShownCage(provider, index, setShownCageStatus) {
 function InputSpace(props) {
   const onChange = (e) => {
     props.setCommitPrice(e.target.value)
-    console.log('setCommitPrice ', e.target.value);
   }
 
   return (
